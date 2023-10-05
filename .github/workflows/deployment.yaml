@@ -25,10 +25,10 @@ jobs:
             dockerfile: ./Dockerfile
             context: .
             platform: linux/amd64
-          - image-name: secret-syncer-arm
-            dockerfile: ./Dockerfile
-            context: .
-            platform: linux/arm
+    #          - image-name: secret-syncer-arm
+    #            dockerfile: ./Dockerfile
+    #            context: .
+    #            platform: linux/arm
     env:
       STRAT_DOCKER_IMAGE: ${{ matrix.configs.image-name }}
       STRAT_DOCKERFILE: ${{ matrix.configs.dockerfile }}
