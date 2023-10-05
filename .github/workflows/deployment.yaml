@@ -2,7 +2,8 @@ name: CI-CD
 
 on:
   push:
-
+env:
+  DOCKER_DOMAIN: ghcr.io
 jobs:
   precommit:
     name: Pre-commit Check
@@ -66,6 +67,7 @@ jobs:
   release:
     name: Semantic Release
     needs:
+      - build
       - precommit
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
