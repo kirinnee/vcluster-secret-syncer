@@ -1,0 +1,4 @@
+plugin:
+  secret-syncer:
+    image: ghcr.io/kirinnee/vcluster-secret-syncer/secret-syncer-amd:latest
+    imagePullPolicy: IfNotPresent

@@ -1,0 +1,10 @@
+.devspace
+vendor
+.direnv
+.task
+.pre-commit-config.yaml
+.idea
+.env
+dist
+debug.yaml
+.DS_Store
