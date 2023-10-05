@@ -22,11 +22,11 @@ jobs:
       matrix:
         configs:
           - image-name: secret-syncer-amd
-            dockerfile: ./infra/Dockerfile
+            dockerfile: ./Dockerfile
             context: .
             platform: linux/amd64
           - image-name: secret-syncer-arm
-            dockerfile: ./infra/Dockerfile
+            dockerfile: ./Dockerfile
             context: .
             platform: linux/arm
     env:
