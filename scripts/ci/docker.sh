@@ -43,7 +43,7 @@ echo "✅ Successfully logged into docker registry!"
 echo "📝 Generating Image tags..."
 
 # Obtain image
-IMAGE_ID="${DOMAIN}/${GITHUB_REPO_REF}/${DOCKER_IMAGE//[._-]*$//}"
+IMAGE_ID="${DOMAIN}/${GITHUB_REPO_REF}/${CI_DOCKER_IMAGE//[._-]*$//}"
 IMAGE_ID=$(echo "${IMAGE_ID}" | tr '[:upper:]' '[:lower:]') # convert to lower case
 
 # obtaining the version
