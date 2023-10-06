@@ -18,6 +18,8 @@ echo "🔐 Logging into docker registry..."
 echo "${DOCKER_PASSWORD}" | helm registry login "${DOMAIN}" -u "${DOCKER_USER}" --password-stdin
 
 SHA="$(echo "${GITHUB_SHA}" | head -c 6)"
+BRANCH="${GITHUB_BRANCH//[._-]*$//}"
+IMAGE_VERSION="${SHA}-${BRANCH}"
 
 old_IFS="$IFS"
 IFS=','
@@ -25,7 +27,7 @@ for docker_image in ${DOCKER_IMAGES}; do
   echo "🚀 Publishing ${docker_image}..."
   echo "📝 Generating Image tags..."
   IMAGE_ID="${DOMAIN}/${GITHUB_REPO_REF}/${docker_image//[._-]*$//}"
-  SHA_IMAGE_REF="${IMAGE_ID}:${SHA}"
+  SHA_IMAGE_REF="${IMAGE_ID}:${IMAGE_VERSION}"
   SEMANTIC_IMAGE_REF="${IMAGE_ID}:${DOCKER_VERSION}"
   echo "📝 SHA     : ${SHA_IMAGE_REF}"
   echo "📝 Semantic: ${SEMANTIC_IMAGE_REF}"
