@@ -15,7 +15,8 @@ set -eu
 
 # login to registry
 echo "🔐 Logging into docker registry..."
-echo "${DOCKER_PASSWORD}" | helm registry login "${DOMAIN}" -u "${DOCKER_USER}" --password-stdin
+echo "${DOCKER_PASSWORD}" | docker login "${DOMAIN}" -u "${DOCKER_USER}" --password-stdin
+echo "✅ Successfully logged into docker registry!"
 
 SHA="$(echo "${GITHUB_SHA}" | head -c 6)"
 BRANCH="${GITHUB_BRANCH//[._-]*$//}"
