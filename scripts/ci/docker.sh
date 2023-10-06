@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env bash
 
 # check for necessary env vars
 [ "${DOMAIN}" = '' ] && echo "❌ 'DOMAIN' env var not set" && exit 1
@@ -22,7 +22,7 @@
 
 [ "${LATEST_BRANCH}" = '' ] && echo "❌ 'LATEST_BRANCH' env var not set" && exit 1
 
-set -eu
+set -euo pipefail
 
 onExit() {
   rc="$?"
@@ -43,12 +43,12 @@ echo "✅ Successfully logged into docker registry!"
 echo "📝 Generating Image tags..."
 
 # Obtain image
-IMAGE_ID="${DOMAIN}/${GITHUB_REPO_REF}/$(echo "${CI_DOCKER_IMAGE}" | sed 's/[._-]*$//')"
+IMAGE_ID="${DOMAIN}/${GITHUB_REPO_REF}/${DOCKER_IMAGE//[._-]*$//}"
 IMAGE_ID=$(echo "${IMAGE_ID}" | tr '[:upper:]' '[:lower:]') # convert to lower case
 
 # obtaining the version
 SHA="$(echo "${GITHUB_SHA}" | head -c 6)"
-BRANCH="$(echo "${GITHUB_BRANCH}" | sed 's/[._-]*$//')"
+BRANCH="${GITHUB_BRANCH//[._-]*$//}"
 IMAGE_VERSION="${SHA}-${BRANCH}"
 
 # Generate image references
