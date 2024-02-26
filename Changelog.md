@@ -1,3 +1,16 @@
+## [1.1.0](https://github.com/kirinnee/vcluster-secret-syncer/compare/v1.0.0...v1.1.0) (2024-02-26)
+
+
+### 🚀 New Features
+
+* change build steps ([ee2230b](https://github.com/kirinnee/vcluster-secret-syncer/commit/ee2230b11940ef534b5423fa6b367c2887b3991c))
+
+
+### 🐛 Bug Fixes
+
+* formatting ([29569f1](https://github.com/kirinnee/vcluster-secret-syncer/commit/29569f103740b5376f412cd187dba952872a68d0))
+* incorrect CI_DOCKER_IMAGES env var ([2e61f14](https://github.com/kirinnee/vcluster-secret-syncer/commit/2e61f14b2947e165a3fce230950887e4fcbe20f3))
+
 ## 1.0.0 (2023-10-06)
 
 
