@@ -1,4 +1,4 @@
-{ pkgs, atomi, atomi_classic, pkgs-sep-24-23 }:
+{ pkgs, atomi, pkgs-feb-23-24 }:
 let
 
   all = {
@@ -7,18 +7,12 @@ let
       {
         inherit
           infisical
-          pls;
-      }
-    );
-    atomipkgs_classic = (
-      with atomi_classic;
-      {
-        inherit
+          pls
           sg;
       }
     );
-    sep-24-23 = (
-      with pkgs-sep-24-23;
+    feb-23-24 = (
+      with pkgs-feb-23-24;
       {
         inherit
           coreutils
@@ -47,5 +41,4 @@ let
 in
 with all;
 atomipkgs //
-atomipkgs_classic //
-sep-24-23
+feb-23-24

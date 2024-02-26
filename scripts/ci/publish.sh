@@ -4,40 +4,43 @@
 
 [ "${DOCKER_PASSWORD}" = '' ] && echo "❌ 'DOCKER_PASSWORD' env var not set" && exit 1
 [ "${DOCKER_USER}" = '' ] && echo "❌ 'DOCKER_USER' env var not set" && exit 1
-[ "${DOCKER_IMAGES}" = '' ] && echo "❌ 'DOCKER_IMAGES' env var not set" && exit 1
 [ "${GITHUB_SHA}" = '' ] && echo "❌ 'GITHUB_SHA' env var not set" && exit 1
 [ "${GITHUB_BRANCH}" = '' ] && echo "❌ 'GITHUB_BRANCH' env var not set" && exit 1
 [ "${GITHUB_REPO_REF}" = '' ] && echo "❌ 'GITHUB_REPO_REF' env var not set" && exit 1
+[ "${CI_DOCKER_IMAGES}" = '' ] && echo "❌ 'CI_DOCKER_IMAGES' env var not set" && exit 1
 
-DOCKER_VERSION="$1"
+version="$1"
 
-set -eu
+set -euo pipefail
 
-# login to registry
 echo "🔐 Logging into docker registry..."
 echo "${DOCKER_PASSWORD}" | docker login "${DOMAIN}" -u "${DOCKER_USER}" --password-stdin
 echo "✅ Successfully logged into docker registry!"
 
-SHA="$(echo "${GITHUB_SHA}" | head -c 6)"
-BRANCH="${GITHUB_BRANCH//[._-]*$//}"
-IMAGE_VERSION="${SHA}-${BRANCH}"
-
-old_IFS="$IFS"
+OLDIFS=$IFS
 IFS=','
-for docker_image in ${DOCKER_IMAGES}; do
-  echo "🚀 Publishing ${docker_image}..."
-  echo "📝 Generating Image tags..."
+
+for docker_image in ${CI_DOCKER_IMAGES}; do
+
+  echo "📝 Generating Image tags for '${docker_image}' ..."
+  # Obtain image
   IMAGE_ID="${DOMAIN}/${GITHUB_REPO_REF}/${docker_image//[._-]*$//}"
-  SHA_IMAGE_REF="${IMAGE_ID}:${IMAGE_VERSION}"
-  SEMANTIC_IMAGE_REF="${IMAGE_ID}:${DOCKER_VERSION}"
-  echo "📝 SHA     : ${SHA_IMAGE_REF}"
-  echo "📝 Semantic: ${SEMANTIC_IMAGE_REF}"
-  echo "⬇️ Pulling image..."
-  docker pull "${SHA_IMAGE_REF}"
-  docker tag "${SHA_IMAGE_REF}" "${SEMANTIC_IMAGE_REF}"
-  echo "⬆️ Pushing image..."
-  docker push "${SEMANTIC_IMAGE_REF}"
-  echo "✅ Successfully published ${docker_image}!"
+  IMAGE_ID=$(echo "${IMAGE_ID}" | tr '[:upper:]' '[:lower:]') # convert to lower case
+
+  # obtaining the version
+  SHA="$(echo "${GITHUB_SHA}" | head -c 6)"
+  BRANCH="${GITHUB_BRANCH//[._-]*$//}"
+  IMAGE_VERSION="${SHA}-${BRANCH}"
+
+  # Generate image references
+  IMAGE_REF="${IMAGE_ID}:${IMAGE_VERSION}"
+  TARGET_IMAGE_REF="${IMAGE_ID}:${version}"
+
+  echo "🏷️ Tagging image '${IMAGE_REF}' as '${TARGET_IMAGE_REF}'..."
+  docker buildx imagetools create -t "${TARGET_IMAGE_REF}" "${IMAGE_REF}"
+  echo "✅ Completed tagging pushed image '${TARGET_IMAGE_REF}'!"
+
 done
-IFS="$old_IFS"
-echo "✅ Successfully published all images!"
+IFS=$OLDIFS
+
+echo "✅ Successfully published images!"

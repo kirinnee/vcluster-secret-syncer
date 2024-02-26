@@ -32,7 +32,6 @@ with packages;
   ];
 
   releaser = [
-    nodejs_20
     sg
   ];
 }
